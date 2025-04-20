@@ -1,0 +1,257 @@
+1.insertion sort 
+#include <stdio.h>
+
+int main() {
+    int n, i, j, key;
+    
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+    
+    int a[n];
+    
+    printf("Enter the unsorted array: ");
+    for(i = 0; i < n; i++) {
+        scanf("%d", &a[i]);
+    }
+
+    for(i = 1; i < n; i++) {
+        key = a[i];
+        j = i - 1;
+        while(j >= 0 && a[j] > key) {
+            a[j + 1] = a[j];
+            j = j - 1;
+        }
+        a[j + 1] = key;
+    }
+
+    printf("Sorted array: ");
+    for(i = 0; i < n; i++) {
+        printf("%d ", a[i]);
+    }
+    
+    return 0;
+}
+
+
+2.quick sort 
+#include <stdio.h>
+
+void swap(int *a, int *b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+int partition(int a[], int low, int high) {
+    int pivot = a[high];
+    int i = low - 1;
+    for(int j = low; j < high; j++) {
+        if(a[j] < pivot) {
+            i++;
+            swap(&a[i], &a[j]);
+        }
+    }
+    swap(&a[i + 1], &a[high]);
+    return i + 1;
+}
+
+void quickSort(int a[], int low, int high) {
+    if(low < high) {
+        int pi = partition(a, low, high);
+        quickSort(a, low, pi - 1);
+        quickSort(a, pi + 1, high);
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+
+    int a[n];
+    printf("Enter the unsorted array: ");
+    for(int i = 0; i < n; i++) {
+        scanf("%d", &a[i]);
+    }
+
+    quickSort(a, 0, n - 1);
+
+    printf("Sorted array: ");
+    for(int i = 0; i < n; i++) {
+        printf("%d ", a[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
+
+
+3.merge sort 
+#include <stdio.h>
+
+void merge(int arr[], int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    int L[n1], R[n2];
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[mid + 1 + j];
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k] = L[i];
+            i++;
+        } else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(int arr[], int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+void printArray(int arr[], int size) {
+    for (int t = 0; t < size; t++)
+        printf("%d ", arr[t]);
+    printf("\n");
+}
+
+int main() {
+    int n;
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+    int arr[n];
+    printf("Enter %d elements:\n", n);
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+    printf("Original array:\n");
+    printArray(arr, n);
+    mergeSort(arr, 0, n - 1);
+    printf("Sorted array:\n");
+    printArray(arr, n);
+    return 0;
+}
+
+4.maximum and minimum
+#include <stdio.h>
+
+void maxMin(int arr[], int i, int j, int *max, int *min) {
+    if (i == j) {
+        *max = *min = arr[i];
+    } else if (i == j - 1) {
+        if (arr[i] < arr[j]) {
+            *max = arr[j];
+            *min = arr[i];
+        } else {
+            *max = arr[i];
+            *min = arr[j];
+        }
+    } else {
+        int mid = (i + j) / 2;
+        int max1, min1, max2, min2;
+
+        maxMin(arr, i, mid, &max1, &min1);
+        maxMin(arr, mid + 1, j, &max2, &min2);
+
+        *max = (max1 > max2) ? max1 : max2;
+        *min = (min1 < min2) ? min1 : min2;
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter the number of elements in the array: ");
+    scanf("%d", &n);
+
+    int arr[n];
+    printf("Enter %d elements: \n", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    int max, min;
+    maxMin(arr, 0, n - 1, &max, &min);
+
+    printf("Maximum Element: %d\n", max);
+    printf("Minimum Element: %d\n", min);
+
+    return 0;
+}
+
+
+5.kanpsack 
+#include <stdio.h>
+
+typedef struct {
+    int profit;
+    int weight;
+    float ratio;
+} Item;
+
+void knapsack(int n, int m, Item items[]) {
+    for (int i = 0; i < n; i++) {
+        items[i].ratio = (float)items[i].profit / items[i].weight;
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (items[i].ratio < items[j].ratio) {
+                Item temp = items[i];
+                items[i] = items[j];
+                items[j] = temp;
+            }
+        }
+    }
+
+    float total_profit = 0.0;
+
+    for (int i = 0; i < n; i++) {
+        if (m == 0) {
+            break;
+        }
+
+        if (items[i].weight <= m) {
+            m -= items[i].weight;
+            total_profit += items[i].profit;
+        } else {
+            total_profit += items[i].profit * ((float)m / items[i].weight);
+            m = 0;
+        }
+    }
+
+    printf("Total Profit: %.2f\n", total_profit);
+}
+
+int main() {
+    Item items[] = {
+        {25, 18, 0.0},
+        {24, 15, 0.0},
+        {15, 10, 0.0}
+    };
+
+    int n = 3;
+    int m = 20;
+
+    knapsack(n, m, items);
+
+    return 0;
+}
